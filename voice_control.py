@@ -3,6 +3,8 @@ import json
 import pyautogui
 from vosk import Model, KaldiRecognizer
 import os
+import state
+
 
 def run_voice():
     print("\n--- VOICE MODE ACTIVE ---")
@@ -32,7 +34,8 @@ def run_voice():
     pyautogui.FAILSAFE = False
 
     try:
-        while True:
+        while state.VOICE_ENABLED:
+
             data = stream.read(4000, exception_on_overflow=False)
 
             if recognizer.AcceptWaveform(data):
@@ -68,12 +71,14 @@ def run_voice():
                     pyautogui.write(to_type, interval=0.05)
 
                 elif "back" in text:
-                    print("Returning to menu...")
+                    state.VOICE_ENABLED = False
                     break
 
+
                 elif "exit" in text or "quit" in text:
-                    print("Exiting program...")
-                    exit(0)
+                    state.VOICE_ENABLED = False
+                    break
+
 
     except KeyboardInterrupt:
         print("Voice mode stopped")

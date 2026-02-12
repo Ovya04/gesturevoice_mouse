@@ -3,6 +3,8 @@ import mediapipe as mp
 import pyautogui
 import time
 import math
+import state
+
 
 def fingers_up(hand):
     tips = [8, 12, 16, 20]
@@ -42,7 +44,8 @@ def run_gesture():
                         min_detection_confidence=0.7,
                         min_tracking_confidence=0.7) as hands:
 
-        while True:
+        while state.GESTURE_ENABLED:
+
             ret, frame = cap.read()
             if not ret:
                 break
@@ -126,7 +129,9 @@ def run_gesture():
 
             key = cv2.waitKey(1)
             if key == ord('q'):
-                exit(0)
+                state.GESTURE_ENABLED = False
+                break
+
 
         cap.release()
         cv2.destroyAllWindows()
